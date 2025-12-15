@@ -14,7 +14,7 @@ def format_price(price: str):
     else:
         return int(price_str)
 
-class PlayerType(str, Enum):
+class AuctionCategory(str, Enum):
     BA = 'Batter'
     AL = 'All Rounder'
     FA = 'Fast Bowler'
@@ -28,7 +28,23 @@ class PlayerType(str, Enum):
 
     @classmethod
     def from_set_name(cls, set_name: str):
-        return cls[re.split(r'(\d+)', set_name)[0]].value
+        return cls[re.split(r'(\d+)', set_name)[0]]
+
+class PlayerTypeTeam(str, Enum):
+    BA = 'Batter'
+    AL = 'All Rounder'
+    FA = 'Bowler'
+    SP = 'Bowler'
+    WK = 'Wicket Keeper'
+    UBA = 'Batter'
+    UWK = 'Wicket Keeper'
+    UFA = 'Bowler'
+    USP = 'Bowler'
+    UAL = 'All Rounder'
+
+    @classmethod
+    def from_auction_type(cls, auction_type: AuctionCategory):
+        return cls[auction_type.name]
 
 class AuctionSet:
     def __init__(self, set_number: int, set_name: str, players: list["Player"]):
@@ -49,10 +65,10 @@ class AuctionSet:
         return len(self.remaining_players) > 0 
 
     def __repr__(self):
-        return f"Set {self.set_name} - {len(self.remaining_players)} remaining players"
+        return f"Set {self.set_name} - {len(self.remaining_players)} remaining players - {self.get_random_player()}"
 
 class Player:
-    def __init__(self, name: str, isOverseas: bool, type: PlayerType, base_price: int, retained_price: int, capping: str = None):
+    def __init__(self, name: str, isOverseas: bool, type: PlayerTypeTeam, base_price: int, retained_price: int, capping: str = None, type_auction: AuctionCategory = None):
         self.name = name
         self.isOverseas = isOverseas
         self.type = type
@@ -61,7 +77,7 @@ class Player:
         self.capping = capping
 
     def __repr__(self):
-        return f"{self.name} - {self.type} - {self.price}L"
+        return f"{self.name} - {self.type} ({self.base_price}L/{self.retained_price}L)"
 
 class Team:
     def __init__(self, name: str, budget: int):
@@ -95,6 +111,26 @@ class Team:
                     )
                 )
     
+    def can_afford(self, player_amount: int):
+        return self.budget >= player_amount
+
+    def add_player(self, player: Player, price: int):
+        player.retained_price = price
+
+        self.budget -= price
+        self.total_spent += price
+        self.total_slots -= 1
+        if player.isOverseas:
+            self.overseas_slots -= 1
+
+        self.squad.append(player)
+
+    def get_squad_composition(self) -> dict:
+        composition = {}
+        for player in self.squad:
+            composition[player.type] = composition.get(player.type, 0) + 1
+        return composition
+
     def __repr__(self):
         return f"{self.name} - {self.total_spent}L - {self.total_slots} slots - {self.overseas_slots} overseas slots"
 
@@ -105,7 +141,8 @@ def get_teams():
 def load_auction_list():
     df = pd.read_csv('dataset.tsv', sep='\t')
     df.columns = ['serial_number', 'set_number', 'set_name', 'player', 'country', 'c_u_a', 'base_price']
-    df['type'] = df['set_name'].apply(PlayerType.from_set_name)
+    df['auction_category'] = df['set_name'].apply(AuctionCategory.from_set_name)
+    df['type_team'] = df['auction_category'].apply(PlayerTypeTeam.from_auction_type)
 
     auction_sets = []
 
@@ -118,10 +155,11 @@ def load_auction_list():
             players.append(Player(
                 row['player'],
                 row['country'] != 'India',
-                row['type'],
+                row['type_team'],
                 row['base_price'],
                 None,
-                row['c_u_a']
+                row['c_u_a'],
+                row['auction_category']
             ))
 
         auction_sets.append(AuctionSet(set_number, set_name, players))
@@ -131,4 +169,5 @@ def load_auction_list():
 
 if __name__ == '__main__':
     auction_sets = load_auction_list()
-    print(auction_sets)
+    for set in auction_sets:
+        print(set.get_random_player())
