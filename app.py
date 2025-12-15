@@ -132,7 +132,7 @@ class Team:
         return composition
 
     def __repr__(self):
-        return f"{self.name} - {self.total_spent}L - {self.total_slots} slots - {self.overseas_slots} overseas slots"
+        return f"{self.name} - {self.total_spent}L spent - {self.total_spent / 12500 * 100:.2f}% of budget - {self.total_slots} slots - {self.overseas_slots} overseas slots"
 
 def get_teams():
     with open('teams.json', 'r') as f:
@@ -167,7 +167,35 @@ def load_auction_list():
     return auction_sets
 
 
-if __name__ == '__main__':
+def initialize_auction():
+    # Load teams
+    teams_list = get_teams()
+    teams = []
+    for team_name in teams_list:
+        team = Team(team_name, 12500)  # 125 crores = 12500 lakhs
+        team.load_squad()
+        teams.append(team)
+    
+    # Load auction sets
     auction_sets = load_auction_list()
-    for set in auction_sets:
-        print(set.get_random_player())
+    
+    print(f"✓ Loaded {len(teams)} teams")
+    print(f"✓ Loaded {len(auction_sets)} auction sets")
+    total_players = sum(len(s.players) for s in auction_sets)
+    print(f"✓ Total players in auction: {total_players}")
+    
+    return teams, auction_sets
+
+if __name__ == '__main__':
+    teams, auction_sets = initialize_auction()
+    
+    for team in teams:
+        print(f"\n{team}")
+        print(f"  Squad: {len(team.squad)} players")
+        print(f"  Composition: {team.get_squad_composition()}")
+    
+    for auction_set in auction_sets:
+        print(f"\n{auction_set.set_name}: {len(auction_set.players)} players")
+    
+    first_player = auction_sets[0].get_random_player()
+    print(f"\nRandom player: {first_player}")
