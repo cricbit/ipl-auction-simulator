@@ -1,0 +1,360 @@
+Serial Number	Set Number	Set	Name	Country	C/U/A	Base Price (in Lakhs)
+1	1	BA1	Devon Conway	New Zealand	Capped	200
+2	1	BA1	Jake Fraser-McGurk	Australia	Capped	200
+3	1	BA1	Cameron Green	Australia	Capped	200
+4	1	BA1	Sarfaraz Khan	India	Capped	75
+5	1	BA1	David Miller	South Africa	Capped	200
+6	1	BA1	Prithvi Shaw	India	Capped	75
+7	2	AL1	Gus Atkinson	England	Capped	200
+8	2	AL1	Wanindu Hasaranga	Sri Lanka	Capped	200
+9	2	AL1	Deepak Hooda	India	Capped	75
+10	2	AL1	Venkatesh Iyer	India	Capped	200
+11	2	AL1	Liam Livingstone	England	Capped	200
+12	2	AL1	Wiaan Mulder	South Africa	Capped	100
+13	2	AL1	Rachin Ravindra	New Zealand	Capped	200
+14	3	WK1	Finn Allen	New Zealand	Capped	200
+15	3	WK1	Jonny Bairstow	England	Capped	100
+16	3	WK1	KS Bharat	India	Capped	75
+17	3	WK1	Quinton De Kock	South Africa	Capped	100
+18	3	WK1	Ben Duckett	England	Capped	200
+19	3	WK1	Rahmanullah Gurbaz	Afghanistan	Capped	150
+20	3	WK1	Jamie Smith	England	Capped	200
+21	4	FA1	Gerald Coetzee	South Africa	Capped	200
+22	4	FA1	Akash Deep	India	Capped	100
+23	4	FA1	Jacob Duffy	New Zealand	Capped	200
+24	4	FA1	Fazalhaq Farooqi	Afghanistan	Capped	100
+25	4	FA1	Matt Henry	New Zealand	Capped	200
+26	4	FA1	Spencer Johnson	Australia	Capped	150
+27	4	FA1	Shivam Mavi	India	Capped	75
+28	4	FA1	Anrich Nortje	South Africa	Capped	200
+29	4	FA1	Matheesha Pathirana	Sri Lanka	Capped	200
+30	5	SP1	Ravi Bishnoi	India	Capped	200
+31	5	SP1	Rahul Chahar	India	Capped	100
+32	5	SP1	Akeal Hosein	West Indies	Capped	200
+33	5	SP1	Mujeeb Rahman	Afghanistan	Capped	200
+34	5	SP1	Maheesh Theekshana	Sri Lanka	Capped	200
+35	6	UBA1	Aarya Desai	India	Uncapped	30
+36	6	UBA1	Yash Dhull	India	Uncapped	30
+37	6	UBA1	Abhinav Manohar	India	Uncapped	30
+38	6	UBA1	Anmolpreet Singh	India	Uncapped	30
+39	6	UBA1	Atharva Taide	India	Uncapped	30
+40	6	UBA1	Abhinav Tejrana	India	Uncapped	30
+41	7	UAL1	Auqib Nabi	India	Uncapped	30
+42	7	UAL1	Rajvardhan Hangargekar	India	Uncapped	40
+43	7	UAL1	Tanush Kotian	India	Uncapped	30
+44	7	UAL1	Shivang Kumar	India	Uncapped	30
+45	7	UAL1	Mahipal Lomror	India	Uncapped	50
+46	7	UAL1	Kamlesh Nagarkoti	India	Uncapped	30
+47	7	UAL1	Vijay Shankar	India	Uncapped	30
+48	7	UAL1	Sanvir Singh	India	Uncapped	30
+49	7	UAL1	Eden Apple Tom	India	Uncapped	30
+50	7	UAL1	Prashant Veer	India	Uncapped	30
+51	8	UWK1	Ruchit Ahir	India	Uncapped	30
+52	8	UWK1	Vansh Bedi	India	Uncapped	30
+53	8	UWK1	Mukul Choudhary	India	Uncapped	30
+54	8	UWK1	Tushar Raheja	India	Uncapped	30
+55	8	UWK1	Kartik Sharma	India	Uncapped	30
+56	8	UWK1	Tejasvi Singh	India	Uncapped	30
+57	9	UFA1	Raj Limbani	India	Uncapped	30
+58	9	UFA1	Akash Madhwal	India	Uncapped	30
+59	9	UFA1	Sushant Mishra	India	Uncapped	30
+60	9	UFA1	Ashok Sharma	India	Uncapped	30
+61	9	UFA1	Simarjeet Singh	India	Uncapped	30
+62	9	UFA1	Naman Tiwari	India	Uncapped	30
+63	9	UFA1	Kartik Tyagi	India	Uncapped	30
+64	10	USP1	Yash Raj Punja	India	Uncapped	30
+65	10	USP1	Vignesh Puthur	India	Uncapped	30
+66	10	USP1	Karn Sharma	India	Uncapped	50
+67	10	USP1	Shivam Shukla	India	Uncapped	30
+68	10	USP1	Kumar Kartikeya	India	Uncapped	30
+69	10	USP1	Prashant Solanki	India	Uncapped	30
+70	10	USP1	Wahidullah Zadran	Afghanistan	Uncapped	30
+71	11	BA2	Mayank Agarawal	India	Capped	75
+72	11	BA2	Sediqullah Atal	Afghanistan	Capped	75
+73	11	BA2	Ackeem Auguste	West Indies	Capped	75
+74	11	BA2	Reeza Hendricks	South Africa	Capped	100
+75	11	BA2	Pathum Nissanka	Sri Lanka	Capped	75
+76	11	BA2	Tim Robinson	New Zealand	Capped	75
+77	11	BA2	Steve Smith	Australia	Capped	200
+78	11	BA2	Rahul Tripathi	India	Capped	75
+79	12	AL2	Sean Abbott	Australia	Capped	200
+80	12	AL2	Michael Bracewell	New Zealand	Capped	200
+81	12	AL2	Ben Dwarshuis	Australia	Capped	100
+82	12	AL2	Zak Foulkes	New Zealand	Capped	75
+83	12	AL2	Jason Holder	West Indies	Capped	200
+84	12	AL2	Daryl Mitchell	New Zealand	Capped	200
+85	12	AL2	Daniel Sams	Australia	Capped	100
+86	12	AL2	Dasun Shanaka	Sri Lanka	Capped	75
+87	12	AL2	Matthew Short	Australia	Capped	150
+88	13	WK2	Tom Banton	England	Capped	200
+89	13	WK2	Jordan Cox	England	Capped	75
+90	13	WK2	Shai Hope	West Indies	Capped	200
+91	13	WK2	Josh Inglis	Australia	Capped	200
+92	13	WK2	Ben McDermott	Australia	Capped	75
+93	13	WK2	Kusal Mendis	Sri Lanka	Capped	75
+94	13	WK2	Kusal Perera	Sri Lanka	Capped	100
+95	13	WK2	Tim Seifert	New Zealand	Capped	150
+96	14	FA2	Kyle Jamieson	New Zealand	Capped	200
+97	14	FA2	Saqib Mahmood	England	Capped	150
+98	14	FA2	Adam Milne	New Zealand	Capped	200
+99	14	FA2	Lungi Ngidi	South Africa	Capped	200
+100	14	FA2	William O'Rourke	New Zealand	Capped	200
+101	14	FA2	Mustafizur Rahman	Bangladesh	Capped	200
+102	14	FA2	Chetan Sakariya	India	Capped	75
+103	14	FA2	Kuldeep Sen	India	Capped	75
+104	14	FA2	Umesh Yadav	India	Capped	150
+105	15	SP2	Qais Ahmad	Afghanistan	Capped	75
+106	15	SP2	Rishad Hossain	Bangladesh	Capped	75
+107	15	SP2	Waqar Salamkheil	Afghanistan	Capped	100
+108	15	SP2	Viyaskanth Vijayakanth	Sri Lanka	Capped	75
+109	16	UBA2	Ankit Kumar	India	Uncapped	30
+110	16	UBA2	Rohan Kunnummal	India	Uncapped	30
+111	16	UBA2	Danish Malewar	India	Uncapped	30
+112	16	UBA2	Pukhraj Mann	India	Uncapped	30
+113	16	UBA2	Salman Nizar	India	Uncapped	30
+114	16	UBA2	Aman Rao Perala	India	Uncapped	30
+115	16	UBA2	Akshat Raghuwanshi	India	Uncapped	30
+116	16	UBA2	Manan Vohra	India	Uncapped	30
+117	17	UAL2	Yuvraj Chaudhary	India	Uncapped	30
+118	17	UAL2	Satvik Deswal	India	Uncapped	30
+119	17	UAL2	Aman Khan	India	Uncapped	30
+120	17	UAL2	Darshan Nalkande	India	Uncapped	30
+121	17	UAL2	Vicky Ostwal	India	Uncapped	30
+122	17	UAL2	Sairaj Patil	India	Uncapped	30
+123	17	UAL2	Suyash Prabhudessai	India	Uncapped	30
+124	17	UAL2	Mayank Rawat	India	Uncapped	30
+125	17	UAL2	Harsh Tyagi	India	Uncapped	30
+126	17	UAL2	Mangesh Yadav	India	Uncapped	30
+127	18	UWK2	Salil Arora	India	Uncapped	30
+128	18	UWK2	Ricky Bhui	India	Uncapped	30
+129	18	UWK2	Rahul Buddhi	India	Uncapped	30
+130	18	UWK2	Saurav Chuahan	India	Uncapped	30
+131	18	UWK2	Yashvardhan Dalal	India	Uncapped	30
+132	18	UWK2	Abhishek Pathak	India	Uncapped	30
+133	18	UWK2	Kunal Rathore	India	Uncapped	30
+134	18	UWK2	Ravi Singh	India	Uncapped	30
+135	19	UFA2	KM Asif	India	Uncapped	40
+136	19	UFA2	Sakib Hussain	India	Uncapped	30
+137	19	UFA2	Mohammad Izhar	India	Uncapped	30
+138	19	UFA2	Vidwath Kaverappa	India	Uncapped	30
+139	19	UFA2	Vijay Kumar	India	Uncapped	30
+140	19	UFA2	Vidyadhar Patil	India	Uncapped	30
+141	19	UFA2	PV Satyanarayana Raju	India	Uncapped	30
+142	19	UFA2	Onkar Tarmale	India	Uncapped	30
+143	19	UFA2	Prithviraj Yarra	India	Uncapped	30
+144	20	USP2	Shubham Agrawal	India	Uncapped	40
+145	20	USP2	Murugan Ashwin	India	Uncapped	30
+146	20	USP2	Tejas Baroka	India	Uncapped	30
+147	20	USP2	KC Cariappa	India	Uncapped	30
+148	20	USP2	Kartik Chadha	India	Uncapped	30
+149	20	USP2	Pravin Dubey	India	Uncapped	30
+150	20	USP2	Mohit Rathee	India	Uncapped	30
+151	20	USP2	Himanshu Sharma	India	Uncapped	30
+152	20	USP2	Bailapudi Yeswanth	India	Uncapped	30
+153	21	AL3	Rehan Ahmed	England	Capped	75
+154	21	AL3	Cooper Connolly	Australia	Capped	200
+155	21	AL3	Tom Curran	England	Capped	200
+156	21	AL3	Bevon Jacobs	New Zealand	Capped	75
+157	21	AL3	Daniel Lawrence	England	Capped	200
+158	21	AL3	George Linde	South Africa	Capped	100
+159	21	AL3	Gulbadin Naib	Afghanistan	Capped	100
+160	21	AL3	William Sutherland	Australia	Capped	100
+161	21	AL3	Beau Webster	Australia	Capped	125
+162	22	FA3	Taskin Ahmed	Bangladesh	Capped	75
+163	22	FA3	Richard Gleeson	England	Capped	75
+164	22	FA3	Alzarri Joseph	West Indies	Capped	200
+165	22	FA3	Shamar Joseph	West Indies	Capped	75
+166	22	FA3	Riley Meredith	Australia	Capped	150
+167	22	FA3	Jhye Richardson	Australia	Capped	150
+168	22	FA3	Navdeep Saini	India	Capped	75
+169	22	FA3	Naveen Ul Haq	Afghanistan	Capped	200
+170	22	FA3	Luke Wood	England	Capped	75
+171	23	UBA3	Kunal Chandela	India	Uncapped	30
+172	23	UBA3	Ayush Doseja	India	Uncapped	30
+173	23	UBA3	Qamran Iqbal	India	Uncapped	30
+174	23	UBA3	M Dheeraj Kumar	India	Uncapped	30
+175	23	UBA3	Bhanu Pania	India	Uncapped	30
+176	23	UBA3	Sahil Parakh	India	Uncapped	30
+177	23	UBA3	Arsh Kabir Ranga	India	Uncapped	30
+178	23	UBA3	Adarsh Singh	India	Uncapped	30
+179	24	UAL3	Manoj Bhandage	India	Uncapped	30
+180	24	UAL3	Mayank Dagar	India	Uncapped	30
+181	24	UAL3	Raghav Goyal	India	Uncapped	30
+182	24	UAL3	Manvanth Kumar	India	Uncapped	30
+183	24	UAL3	Abid Mushtaq	India	Uncapped	30
+184	24	UAL3	Jalaj Saxena	India	Uncapped	40
+185	24	UAL3	Atit Sheth	India	Uncapped	30
+186	24	UAL3	Hritik Shokeen	India	Uncapped	30
+187	24	UAL3	Jagadeesha Suchith	India	Uncapped	30
+188	24	UAL3	Tanay Thyagarajann	India	Uncapped	30
+189	25	UWK3	Joe Clarke	England	Uncapped	50
+190	25	UWK3	Connor Esterhuizen	South Africa	Uncapped	30
+191	25	UWK3	Ajitesh Guruswamy	India	Uncapped	30
+192	25	UWK3	Siddharth Joon	India	Uncapped	30
+193	25	UWK3	Tom Moores	England	Uncapped	40
+194	25	UWK3	Bipin Saurabh	India	Uncapped	30
+195	25	UWK3	Vishnu Solanki	India	Uncapped	30
+196	25	UWK3	Hardik Tamore	India	Uncapped	30
+354	25	UWK3	K.L. Shrijith	India	Uncapped	30
+197	26	UFA3	Sayan Ghosh	India	Uncapped	30
+198	26	UFA3	Money Grewal	India	Uncapped	30
+199	26	UFA3	Arpit Guleria	India	Uncapped	30
+200	26	UFA3	Sunil Kumar	India	Uncapped	30
+201	26	UFA3	Tristan Luus	South Africa	Uncapped	30
+202	26	UFA3	Divesh Sharma	India	Uncapped	30
+203	26	UFA3	Abhilash Shetty	India	Uncapped	30
+204	26	UFA3	Irfan Umair	India	Uncapped	30
+205	26	UFA3	Kuldip Yadav	India	Uncapped	30
+206	27	USP3	Manan Bhardwaj	India	Uncapped	30
+207	27	USP3	Shreyas Chavan	India	Uncapped	30
+208	27	USP3	Parikshit Dhanak	India	Uncapped	30
+209	27	USP3	Chintal Gandhi	India	Uncapped	30
+210	27	USP3	Dharmendrasinh Jadeja	India	Uncapped	30
+211	27	USP3	Amit Kumar	India	Uncapped	30
+212	27	USP3	Vishal Nishad	India	Uncapped	30
+213	27	USP3	Saumy Pandey	India	Uncapped	30
+214	27	USP3	Jhathavedh Subramanyan	India	Uncapped	30
+215	28	AL4	Muhammad Abbas	New Zealand	Capped	75
+216	28	AL4	Charith Asalanka	Sri Lanka	Capped	100
+217	28	AL4	Roston Chase	West Indies	Capped	125
+218	28	AL4	Liam Dawson	England	Capped	200
+219	28	AL4	George Garton	England	Capped	75
+220	28	AL4	Kyle Mayers	West Indies	Capped	125
+221	28	AL4	Dwaine Pretorius	South Africa	Capped	100
+222	28	AL4	Nathan Smith	New Zealand	Capped	75
+223	28	AL4	Dunith Wellalage	Sri Lanka	Capped	75
+355	28	AL4	Eathan Bosch	South Africa	Capped	75
+356	28	AL4	Chris Green	Australia	Capped	75
+224	29	FA4	Jason Behrendorff	Australia	Capped	150
+225	29	FA4	Tanzim Hasan Sakib	Bangladesh	Capped	75
+226	29	FA4	Matthew Potts	England	Capped	75
+227	29	FA4	Nahid Rana	Bangladesh	Capped	75
+228	29	FA4	Olly Stone	England	Capped	125
+229	29	FA4	Joshua Tongue	England	Capped	100
+230	29	FA4	Sandeep Warrier	India	Capped	75
+231	30	UBA4	Sachin Dhas	India	Uncapped	30
+232	30	UBA4	Miles Hammond	England	Uncapped	30
+233	30	UBA4	Ahammed Imran	India	Uncapped	30
+234	30	UBA4	Vishvarajsinh Jadeja	India	Uncapped	30
+235	30	UBA4	Ayaz Khan	India	Uncapped	30
+236	30	UBA4	Daniel Lategan	England	Uncapped	30
+237	30	UBA4	Siddhant Rana	India	Uncapped	30
+238	30	UBA4	Aaron Varghese	India	Uncapped	30
+357	30	UBA4	Swastik Chikara	India	Uncapped	30
+358	30	UBA4	Rahul Raj Namala	India	Uncapped	30
+359	30	UBA4	Virat Singh	India	Uncapped	30
+239	31	UAL4	Atharva Ankolekar	India	Uncapped	30
+240	31	UAL4	Abdul Bazith	India	Uncapped	30
+241	31	UAL4	Karan Lal	India	Uncapped	30
+242	31	UAL4	Shams Mulani	India	Uncapped	30
+243	31	UAL4	Ripal Patel	India	Uncapped	30
+244	31	UAL4	Prince Balwant Rai	India	Uncapped	30
+245	31	UAL4	Vivrant Sharma	India	Uncapped	30
+246	31	UAL4	Utkarsh Singh	India	Uncapped	30
+247	31	UAL4	Ayush Vartak	India	Uncapped	30
+248	31	UAL4	Sanjay Yadav	India	Uncapped	30
+249	32	UFA4	Sayed Irfan Aftab	India	Uncapped	30
+250	32	UFA4	Esakkimuthu Ayyakutti	India	Uncapped	30
+251	32	UFA4	Praful Hinge	India	Uncapped	30
+252	32	UFA4	Pankaj Jaswal	India	Uncapped	30
+253	32	UFA4	Kulwant Khejroliya	India	Uncapped	30
+254	32	UFA4	Ravi Kumar	India	Uncapped	30
+255	32	UFA4	Rajan Kumar	India	Uncapped	30
+256	32	UFA4	Safvan Patel	India	Uncapped	30
+257	32	UFA4	Ishan Porel	India	Uncapped	30
+258	33	USP4	Purav Agarwal	India	Uncapped	30
+259	33	USP4	Jikku Bright	India	Uncapped	30
+260	33	USP4	Yash Dicholkar	India	Uncapped	30
+261	33	USP4	Arab Gul	Afghanistan	Uncapped	40
+262	33	USP4	Rakibul Hasan	Bangladesh	Uncapped	30
+263	33	USP4	Traveen Mathew	Sri Lanka	Uncapped	30
+264	33	USP4	Naman Pushpak	India	Uncapped	30
+265	33	USP4	Izaz Sawariya	India	Uncapped	30
+266	33	USP4	Roshan Wagshare	India	Uncapped	30
+267	34	FA5	Wesley Agar	Australia	Capped	75
+268	34	FA5	Binura Fernando	Sri Lanka	Capped	75
+269	34	FA5	Shoriful Islam	Bangladesh	Capped	75
+270	34	FA5	Joshua Little	Ireland	Capped	75
+271	34	FA5	Obed McCoy	West Indies	Capped	75
+272	34	FA5	Billy Stanlake	Australia	Capped	75
+273	35	UAL5	RS Ambrish	India	Uncapped	30
+274	35	UAL5	Nikhil Chaudhary	Australia	Uncapped	40
+275	35	UAL5	Krains Fuletra	India	Uncapped	30
+276	35	UAL5	Macneil Noronha	India	Uncapped	30
+277	35	UAL5	R Rajkumar	India	Uncapped	30
+278	35	UAL5	Ninad Rathva	India	Uncapped	30
+279	35	UAL5	Sunny Sandhu	India	Uncapped	30
+280	35	UAL5	Shivalik Sharma	India	Uncapped	30
+281	35	UAL5	Siddharth Yadav	India	Uncapped	30
+282	35	UAL5	R Sonu Yadav	India	Uncapped	30
+283	36	UFA5	Waseem Khanday	India	Uncapped	30
+284	36	UFA5	Atif Mushtaq	India	Uncapped	30
+285	36	UFA5	Atal Rai	India	Uncapped	30
+286	36	UFA5	C Rakshann Readdi	India	Uncapped	30
+287	36	UFA5	Manish Reddy	India	Uncapped	30
+288	36	UFA5	Nishanth Saranu	India	Uncapped	30
+289	36	UFA5	Deependra Singh	India	Uncapped	30
+290	36	UFA5	Rajat Verma	India	Uncapped	30
+291	36	UFA5	Rohit Yadav	India	Uncapped	30
+292	37	UAL6	Emanjot Chahal	India	Uncapped	30
+293	37	UAL6	Shubhang Hegde	India	Uncapped	30
+294	37	UAL6	Bal Krishna	India	Uncapped	30
+295	37	UAL6	Vihaan Malhotra	India	Uncapped	30
+296	37	UAL6	Khilan Patel	India	Uncapped	30
+297	37	UAL6	Delano Potgieter	South Africa	Uncapped	30
+298	37	UAL6	Hardik Raj	India	Uncapped	30
+299	37	UAL6	Sarthak Ranjan	India	Uncapped	30
+300	37	UAL6	Parth Rekhade	India	Uncapped	30
+301	37	UAL6	Tiaan Van Vuuren	South Africa	Uncapped	30
+302	38	UFA6	Shreevatsha Acharya	India	Uncapped	30
+303	38	UFA6	Sadek Hussain	India	Uncapped	30
+304	38	UFA6	Shubham Kapse	India	Uncapped	30
+305	38	UFA6	Aaqib Khan	India	Uncapped	30
+306	38	UFA6	Sabir Khan	India	Uncapped	30
+307	38	UFA6	Bayanda Majola	South Africa	Uncapped	30
+308	38	UFA6	Srihari Nair	India	Uncapped	30
+309	38	UFA6	Brijesh Sharma	India	Uncapped	30
+310	38	UFA6	Aman Shekhawat	India	Uncapped	30
+311	39	UAL7	Himanshu Bisht	India	Uncapped	30
+312	39	UAL7	Shreyan Chakraborty	India	Uncapped	30
+313	39	UAL7	Kanishk Chouhan	India	Uncapped	30
+314	39	UAL7	Mayank Gusain	India	Uncapped	30
+315	39	UAL7	Akash Pugazhanthi	India	Uncapped	30
+316	39	UAL7	Abhimanyusingh Rajput	India	Uncapped	30
+317	39	UAL7	Shubham Rana	India	Uncapped	30
+318	39	UAL7	Arpit Rana	India	Uncapped	30
+319	39	UAL7	Maramreddy Reddy	India	Uncapped	30
+320	39	UAL7	Sagar Solanki	India	Uncapped	30
+321	40	UAL8	Aryaman Singh Dhaliwal	India	Uncapped	30
+322	40	UAL8	Daksh Kamra	India	Uncapped	30
+323	40	UAL8	Vishal Mandwal	India	Uncapped	30
+324	40	UAL8	Arfaz Mohammad	India	Uncapped	30
+325	40	UAL8	Hemang Patel	India	Uncapped	30
+326	40	UAL8	Mridul Surroch	India	Uncapped	30
+327	40	UAL8	Anuj Thakral	India	Uncapped	30
+328	40	UAL8	Parth Vats	India	Uncapped	30
+329	40	UAL8	Lalit Yadav	India	Uncapped	30
+330	40	UAL8	Nitin Sai Yadav	India	Uncapped	30
+331	41	UAL9	Krish Bhagat	India	Uncapped	30
+332	41	UAL9	Prerit Dutta	India	Uncapped	30
+333	41	UAL9	Sammar Gajjar	India	Uncapped	30
+334	41	UAL9	Nasir Lone	India	Uncapped	30
+335	41	UAL9	Ishan Mulchandani	India	Uncapped	30
+336	41	UAL9	Akhil Scaria	India	Uncapped	30
+337	41	UAL9	Muhammed Sharafuddeen	India	Uncapped	30
+338	41	UAL9	K Ajay Singh	India	Uncapped	30
+339	41	UAL9	Ritik Tada	India	Uncapped	30
+340	41	UAL9	Luckyrajsinh Vaghela	India	Uncapped	30
+341	42	UAL10	Mohamed Ali	India	Uncapped	30
+342	42	UAL10	Madhav Bajaj	India	Uncapped	30
+343	42	UAL10	Akshu Bajwa	India	Uncapped	30
+344	42	UAL10	Varun Raj Singh Bisht	India	Uncapped	30
+345	42	UAL10	Rishabh Chauhan	India	Uncapped	30
+346	42	UAL10	Jack Edwards	Australia	Uncapped	50
+347	42	UAL10	Dian Forrester	South Africa	Uncapped	30
+348	42	UAL10	Dhurmil Matkar	India	Uncapped	30
+349	42	UAL10	Shiva Singh	India	Uncapped	30
+350	42	UAL10	Parikshit Valsangkar	India	Uncapped	30
+351	42	UAL10	Manisankar Murasingh	India	Uncapped	30
+352	42	UAL10	Virandeep Singh	Malaysia	Associate	30
+353	42	UAL10	Chama Milind	India	Uncapped	30
