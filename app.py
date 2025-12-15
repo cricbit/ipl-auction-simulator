@@ -1,7 +1,6 @@
 from enum import Enum
-import requests
+import json
 import re
-from bs4 import BeautifulSoup
 import pandas as pd
 
 AUCTION_URL = 'https://www.cricbuzz.com/cricket-series/ipl-2026/auction/teams'
@@ -31,19 +30,45 @@ class PlayerType(str, Enum):
     def from_set_name(cls, set_name: str):
         return cls[re.split(r'(\d+)', set_name)[0]].value
 
+class AuctionSet:
+    def __init__(self, set_number: int, set_name: str, players: list["Player"]):
+        self.set_number = set_number
+        self.set_name = set_name
+        self.players = players
+        self.remaining_players = players.copy()
+
+    def get_random_player(self):
+        import random
+        if not self.remaining_players:
+            return None
+        player = random.choice(self.remaining_players)
+        self.remaining_players.remove(player)
+        return player
+    
+    def has_remaining_players(self):
+        return len(self.remaining_players) > 0 
+
+    def __repr__(self):
+        return f"Set {self.set_name} - {len(self.remaining_players)} remaining players"
+
 class Player:
-    def __init__(self, name: str, country: str, type: PlayerType, base_price: int, capping: str):
+    def __init__(self, name: str, isOverseas: bool, type: PlayerType, base_price: int, retained_price: int, capping: str = None):
         self.name = name
-        self.country = country
+        self.isOverseas = isOverseas
         self.type = type
         self.base_price = base_price
+        self.retained_price = retained_price
         self.capping = capping
+
+    def __repr__(self):
+        return f"{self.name} - {self.type} - {self.price}L"
 
 class Team:
     def __init__(self, name: str, budget: int):
         self.name = name
         self.squad: list[Player] = []
         self.budget = budget
+        self.total_spent = 0
         self.total_slots = 25
         self.overseas_slots = 8
 
@@ -51,9 +76,59 @@ class Team:
         self.auction_url = None
 
     def load_squad(self):
-        
+        with open(f'squads/{self.name.lower().replace(" ", "-")}.json', 'r') as f:
+            squad = json.load(f)
+            for player in squad:
+                self.budget -= player['playerPrice']
+                self.total_spent += player['playerPrice']
+                self.total_slots -= 1
+                if player['isOverseas']:
+                    self.overseas_slots -= 1
+
+                self.squad.append(
+                    Player(
+                        player['playerName'], 
+                        player['isOverseas'], 
+                        player['playingType'],
+                        None,
+                        player['playerPrice'], 
+                    )
+                )
+    
+    def __repr__(self):
+        return f"{self.name} - {self.total_spent}L - {self.total_slots} slots - {self.overseas_slots} overseas slots"
+
+def get_teams():
+    with open('teams.json', 'r') as f:
+        return json.load(f)
+
 def load_auction_list():
     df = pd.read_csv('dataset.tsv', sep='\t')
     df.columns = ['serial_number', 'set_number', 'set_name', 'player', 'country', 'c_u_a', 'base_price']
     df['type'] = df['set_name'].apply(PlayerType.from_set_name)
-    return df
+
+    auction_sets = []
+
+    for set_number in sorted(df['set_number'].unique()):
+        set_df = df[df['set_number'] == set_number]
+        set_name = set_df['set_name'].iloc[0]
+
+        players = []
+        for _, row in set_df.iterrows():
+            players.append(Player(
+                row['player'],
+                row['country'] != 'India',
+                row['type'],
+                row['base_price'],
+                None,
+                row['c_u_a']
+            ))
+
+        auction_sets.append(AuctionSet(set_number, set_name, players))
+
+    return auction_sets
+
+
+if __name__ == '__main__':
+    auction_sets = load_auction_list()
+    print(auction_sets)

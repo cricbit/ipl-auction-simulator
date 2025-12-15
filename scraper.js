@@ -19,7 +19,7 @@ async function getTeamAuctionUrls(teamName) {
   const $ = cheerio.load(html);
   const links = $("a");
   for (const link of links) {
-    if (link.attribs.href.includes(teamName.toLowerCase().replace(" ", "-"))) {
+    if (link.attribs.href.includes(teamName)) {
       return link.attribs.href.split("/").pop();
     }
   }
@@ -39,7 +39,7 @@ async function getTeamSquad(teamName) {
   for (const row of rows) {
     const cells = $(row).find("td");
     const playerName = cells.eq(0).text();
-    const overseasIcon = cells
+    const isOverseas = cells
       .eq(0)
       .find("i")
       .hasClass("icon-airplanemode_active-filled");
@@ -49,7 +49,7 @@ async function getTeamSquad(teamName) {
 
     squad.push({
       playerName,
-      overseasIcon,
+      isOverseas,
       playingType,
       playerPrice,
     });
@@ -66,11 +66,9 @@ function getTeams() {
 async function main() {
   const teams = await getTeams();
   for (const team of teams) {
-    const squad = await getTeamSquad(team);
-    fs.writeFileSync(
-      `squads/${team.toLowerCase().replace(" ", "-")}.json`,
-      JSON.stringify(squad, null, 2)
-    );
+    teamName = team.toLowerCase().replaceAll(" ", "-");
+    const squad = await getTeamSquad(teamName);
+    fs.writeFileSync(`squads/${teamName}.json`, JSON.stringify(squad, null, 2));
   }
 }
 
