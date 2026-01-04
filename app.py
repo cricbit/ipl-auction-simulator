@@ -1,6 +1,8 @@
+import asyncio
+from dataclasses import dataclass
 from datetime import datetime
 import json
-from typing import List, Optional
+from typing import Dict, List, Optional
 import pandas as pd
 
 from utils import AuctionCategory, AuctionPhase, PlayerTypeTeam
@@ -201,6 +203,116 @@ class StateManager:
             self.unsold_players.append(self.current_player)
         self.phase = AuctionPhase.PLAYER_UNSOLD
 
+@dataclass
+class TeamStrategy:
+    team_name: str
+    role_priorities: List[str]
+    max_budget_per_player: float
+    reserve_budget: int
+    aggressiveness: str
+    critical_gaps: List[str]
+    reasoning: str
+
+    def needs_role(self, role: str) -> bool:
+        return role in self.role_priorities[:3]
+    
+    def can_spend(self, amount: int, budget_remaining: int) -> bool:
+        if amount > self.max_budget_per_player:
+            return False
+        if budget_remaining - amount < self.reserve_budget:
+            return False
+        return True
+
+class LLMClient:
+    def __init__(self, model="claude-sonnet-4-20250514"):
+        self.model = model
+    
+    async def call(self, prompt: str) -> str:
+        return self._mock_response(prompt)
+    
+    def _mock_response(self, prompt: str) -> str:
+        """Mock LLM response for testing"""
+        if "auction strategy" in prompt.lower():
+            return json.dumps({
+                "role_priorities": ["All Rounder", "Fast Bowler", "Batter"],
+                "max_budget_per_player": 2000,
+                "reserve_budget": 2000,
+                "aggressiveness": "moderate",
+                "critical_gaps": ["Need backup all-rounder", "Need death bowler"],
+                "reasoning": "Balanced approach to fill gaps"
+            })
+        return "{}"
+
+class StrategyManager:
+    def __init__(self, llm_client: LLMClient):
+        self.llm_client = llm_client
+        self.strategies: Dict[str, TeamStrategy] = {}
+
+    async def generate_all_strategies(self, teams: List) -> Dict[str, TeamStrategy]:
+        print("\n🧠 Generating team strategies...")
+        
+        for team in teams:
+            strategy = await self.generate_strategy(team)
+            self.strategies[team.name] = strategy
+            print(f"✓ {team.name}: {strategy.aggressiveness}")
+        
+        return self.strategies
+    
+    async def generate_strategy(self, team: Team) -> TeamStrategy:
+        squad_comp = team.get_squad_composition()
+        
+        prompt = f"""
+            You are the strategist for {team.name} in IPL 2026 auction.
+            CURRENT SITUATION:
+                - Budget: ₹{team.budget}L
+                - Squad: {len(team.squad)}/25 players
+                - Slots remaining: {team.total_slots}
+                - Overseas slots: {team.overseas_slots}/8
+
+            SQUAD COMPOSITION:
+                {json.dumps(squad_comp, indent=2)}
+
+            Analyze and create auction strategy.
+
+            Respond ONLY with JSON (no markdown):
+            {{
+                "role_priorities": ["Role1", "Role2", "Role3"],
+                "max_budget_per_player": <number>,
+                "reserve_budget": <number>,
+                "aggressiveness": "conservative|moderate|aggressive",
+                "critical_gaps": ["Gap 1", "Gap 2"],
+                "reasoning": "Brief explanation"
+            }}
+        """
+
+        try:
+            response = await self.llm_client.call(prompt)
+            response = response.replace("```json", "").replace("```", "").strip()
+            strategy_data = json.loads(response)
+            
+            return TeamStrategy(
+                team_name=team.name,
+                **strategy_data
+            )
+        except Exception as e:
+            print(f"⚠️  Error for {team.name}: {e}")
+            return self._default_strategy(team)
+    
+    def _default_strategy(self, team) -> TeamStrategy:
+        return TeamStrategy(
+            team_name=team.name,
+            role_priorities=["All Rounder", "Batter", "Bowler"],
+            max_budget_per_player=int(team.budget * 0.25),
+            reserve_budget=int(team.budget * 0.2),
+            aggressiveness="moderate",
+            critical_gaps=["Balanced squad needed"],
+            reasoning="Default strategy"
+        )
+    
+    def get_strategy(self, team_name: str) -> TeamStrategy:
+        return self.strategies.get(team_name)
+
+
 def get_teams() -> list[str]:
     with open('teams.json', 'r') as f:
         return json.load(f)
@@ -251,40 +363,24 @@ def initialize_auction():
     
     return teams, auction_sets
 
+async def test_strategies():
+    teams, _ = initialize_auction()
+    
+    llm = LLMClient()
+    strategy_mgr = StrategyManager(llm)
+    
+    # Generate all strategies
+    await strategy_mgr.generate_all_strategies(teams)
+    
+    # Print them
+    for team in teams[:3]:
+        strategy = strategy_mgr.get_strategy(team.name)
+        print(f"\n{team.name}:")
+        print(f"  Priorities: {strategy.role_priorities}")
+        print(f"  Max per player: ₹{strategy.max_budget_per_player}L")
+        print(f"  Reserve: ₹{strategy.reserve_budget}L")
+        print(f"  Style: {strategy.aggressiveness}")
+        print(f"  Gaps: {strategy.critical_gaps}")
+
 if __name__ == '__main__':
-    teams, auction_sets = initialize_auction()
-    state = StateManager(teams, auction_sets)
-
-    player = state.load_next_player()
-    print(f"Player: {player.name}, Base: ₹{player.base_price}L")
-
-    # Mark interested teams
-    interested = [teams[0], teams[1], teams[2]]
-    state.set_interested_teams(interested)
-    print(f"Interested: {[t.name for t in state.interested_teams]}")
-
-    # Start bidding
-    state.set_active_bidders(teams[0], teams[1])
-    print(f"Active bidders: {[t.name for t in state.active_bidders]}")
-    print(f"Phase: {state.phase}")
-
-    # Simulate bids
-    state.record_bid(teams[0], player.base_price + 50)
-    state.record_bid(teams[1], player.base_price + 100)
-    state.record_bid(teams[0], player.base_price + 150)
-    print(f"Bid history: {[str(b) for b in state.bid_history]}")
-
-    # One team passes
-    state.mark_team_opted_out(teams[1])
-    print(f"Opted out: {[t.name for t in state.opted_out_teams]}")
-
-    print(teams[0])
-
-    # Finalize
-    print(f"\nBefore sale - {teams[0].name} budget: ₹{teams[0].budget}L")
-    state.finalize_player_sold(teams[0])
-    print(f"After sale - {teams[0].name} budget: ₹{teams[0].budget}L")
-    print(f"Phase: {state.phase}")
-    print(f"Total sold: {len(state.sold_players)}")
-
-    print(teams[0])
+    asyncio.run(test_strategies())
