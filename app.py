@@ -2,6 +2,7 @@ import asyncio
 from dataclasses import dataclass
 from datetime import datetime
 import json
+from re import I
 from typing import Dict, List, Optional
 import pandas as pd
 from langchain_openai import ChatOpenAI
@@ -9,7 +10,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from utils import AuctionCategory, AuctionPhase, PlayerTypeTeam
+from utils import AuctionCategory, AuctionPhase, BidDecision, PlayerTypeTeam
 
 class AuctionSet:
     def __init__(self, set_number: int, set_name: str, players: list["Player"]):
@@ -49,8 +50,7 @@ class Player:
             "name": self.name,
             "isOverseas": self.isOverseas,
             "type": self.type,
-            "price": f"₹ {self.base_price or self.retained_price} L",
-            "capping": self.capping
+            "price": f"{self.base_price or self.retained_price} L"
         }
 
 class Team:
@@ -268,13 +268,17 @@ class StrategyManager:
             You are the strategist for {team.name} in IPL 2026 auction.
             CURRENT SITUATION:
                 - Budget: ₹{team.budget}L
-                - Squad: {len(team.squad)}/25 players
-                - Slots remaining: {team.total_slots}
-                - Overseas slots: {team.overseas_slots}/8
+                - Squad: {len(team.squad)} players
+                - Minimum Squad Size: 18 players
+                - Maximum Slots remaining: {team.max_slots_remaining}
+                - Maximum Overseas slots: {team.max_overseas_slots_remaining}
                 - Other Teams: {set(self.all_teams) - set([team])} 
 
             SQUAD:
                 {json.dumps([p.to_dict() for p in team.squad], indent=2)}
+
+            SQUAD COMPOSITION:
+                {json.dumps(squad_comp, indent=2)}
 
             AUCTIONED PLAYER CATEGORIES:
                 {[e.value for e in AuctionCategory]}
@@ -294,8 +298,6 @@ class StrategyManager:
                 "reasoning": "Brief explanation"
             }}
         """
-
-        print(prompt)
 
         try:
             response = await self.llm_client.call(prompt)
@@ -323,6 +325,73 @@ class StrategyManager:
     
     def get_strategy(self, team_name: str) -> TeamStrategy:
         return self.strategies.get(team_name)
+
+
+@dataclass
+class BiddingDecision:
+    action: BidDecision
+    bid_amount: int
+    confidence: float
+    reasoning: str
+
+    def __repr__(self):
+        return f"{self.action.value} @ ₹{self.bid_amount}L ({self.reasoning[:50]}...)"
+
+
+class BiddingManager:
+    def __init__(self, llm_client, strategy_manager):
+        self.llm_client = llm_client
+        self.strategy_manager = strategy_manager
+    
+    async def evaluate_interest(self, teams: List, player) -> List:
+        print(f"\n🤔 Evaluating interest in {player.name}...")
+        
+        interested = []
+        for team in teams:
+            if await self._should_enter(team, player):
+                interested.append(team)
+                print(f"  ✓ {team.name}")
+        
+        return interested
+    
+    async def _should_enter(self, team: Team, player: Player) -> bool:
+        strategy = self.strategy_manager.get_strategy(team.name)
+        
+        if not team.can_afford(player.base_price):
+            return False
+        if team.max_slots_remaining == 0:
+            return False
+        if player.isOverseas and team.max_overseas_slots_remaining == 0:
+            return False
+        
+        prompt = f"""
+            You are {team.name}'s auction agent.
+            YOUR STRATEGY:
+                - Priorities: {', '.join(strategy.role_priorities)}
+                - Budget: ₹{team.budget}L
+                - Slots: {team.max_slots_remaining} remaining
+
+            PLAYER:
+                - {player.name}
+                - Role: {player.type}
+                - Base: ₹{player.base_price}L
+                - Overseas: {player.isOverseas}
+
+            Should you enter bidding? Respond ONLY with JSON:
+            {{
+                "should_enter": true|false,
+                "reasoning": "brief explanation"
+            }}
+        """
+        
+        try:
+            response = await self.llm_client.call(prompt)
+            response = response.replace("```json", "").replace("```", "").strip()
+            data = json.loads(response)
+            return data.get("should_enter", False)
+        except Exception as e:
+            print(f"  ⚠️  {team.name} decision error: {e}")
+            return strategy.needs_role(player.type)
 
 
 def get_teams() -> list[str]:
@@ -375,24 +444,31 @@ def initialize_auction():
     
     return teams, auction_sets
 
-async def test_strategies():
-    teams, _ = initialize_auction()
+async def test_interest():
+    teams, auction_sets = initialize_auction()
     
+    # Setup managers
     llm = LLMClient()
     strategy_mgr = StrategyManager(llm, teams)
+    bidding_mgr = BiddingManager(llm, strategy_mgr)
+    state = StateManager(teams, auction_sets)
     
-    await strategy_mgr.generate_all_strategies(teams[:3])
+    # Generate strategies
+    print("Generating strategies...")
+    await strategy_mgr.generate_all_strategies(teams)
     
-    for team in teams[:3]:
+    # Load player
+    player = state.load_next_player()
+    print(f"\n🏏 Player: {player.name} ({player.type})")
+    print(f"   Base: ₹{player.base_price}L")
+    
+    # Evaluate interest
+    interested = await bidding_mgr.evaluate_interest(teams, player)
+    
+    print(f"\n✓ {len(interested)} teams interested")
+    for team in interested:
         strategy = strategy_mgr.get_strategy(team.name)
-        print(f"\n{team.name}:")
-        print(f"  Total Budget ₹{team.budget} L")
-        print(f"  Priorities: {strategy.role_priorities}")
-        print(f"  Max per player: ₹{strategy.max_budget_per_player} L")
-        print(f"  Reserve: ₹{strategy.reserve_budget} L")
-        print(f"  Style: {strategy.aggressiveness}")
-        print(f"  Gaps: {strategy.critical_gaps}")
-        print(f"  Reasoning: {strategy.reasoning}")
+        print(f"  - {team.name} (wants: {strategy.role_priorities[:2]})")
 
 if __name__ == '__main__':
-    asyncio.run(test_strategies())
+    asyncio.run(test_interest())

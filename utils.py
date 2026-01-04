@@ -45,3 +45,7 @@ class AuctionPhase(str, Enum):
     PLAYER_UNSOLD = "PLAYER_UNSOLD"
     AUCTION_COMPLETE = "AUCTION_COMPLETE"
 
+
+class BidDecision(str, Enum):
+    BID = "BID"
+    PASS = "PASS"
