@@ -4,6 +4,10 @@ from datetime import datetime
 import json
 from typing import Dict, List, Optional
 import pandas as pd
+from langchain_openai import ChatOpenAI
+from dotenv import load_dotenv
+
+load_dotenv()
 
 from utils import AuctionCategory, AuctionPhase, PlayerTypeTeam
 
@@ -38,7 +42,16 @@ class Player:
         self.capping = capping
 
     def __repr__(self):
-        return f"{self.name} - {self.type} ({self.base_price}L / {self.retained_price}L)"
+        return f"{self.name} - {self.type} ({self.base_price} L / {self.retained_price} L)"
+    
+    def to_dict(self):
+        return {
+            "name": self.name,
+            "isOverseas": self.isOverseas,
+            "type": self.type,
+            "price": f"₹ {self.base_price or self.retained_price} L",
+            "capping": self.capping
+        }
 
 class Team:
     def __init__(self, name: str, budget: int):
@@ -46,8 +59,8 @@ class Team:
         self.squad: list[Player] = []
         self.budget = budget
         self.total_spent = 0
-        self.total_slots = 25
-        self.overseas_slots = 8
+        self.max_slots_remaining = 25
+        self.max_overseas_slots_remaining = 8
 
         self.squad_url = None
         self.auction_url = None
@@ -58,9 +71,9 @@ class Team:
             for player in squad:
                 self.budget -= player['playerPrice']
                 self.total_spent += player['playerPrice']
-                self.total_slots -= 1
+                self.max_slots_remaining -= 1
                 if player['isOverseas']:
-                    self.overseas_slots -= 1
+                    self.max_overseas_slots_remaining -= 1
 
                 self.squad.append(
                     Player(
@@ -80,9 +93,9 @@ class Team:
 
         self.budget -= price
         self.total_spent += price
-        self.total_slots -= 1
+        self.max_slots_remaining -= 1
         if player.isOverseas:
-            self.overseas_slots -= 1
+            self.max_overseas_slots_remaining -= 1
 
         self.squad.append(player)
 
@@ -93,7 +106,7 @@ class Team:
         return composition
 
     def __repr__(self):
-        return f"{self.name} - {self.total_spent}L spent - {self.total_spent / 12500 * 100:.2f}% of budget - {self.total_slots} slots - {self.overseas_slots} overseas slots"
+        return f"{self.name} - {self.total_spent}L spent - {self.total_spent / 12500 * 100:.2f}% of budget - {self.max_slots_remaining} max slots remaining - {self.max_overseas_slots_remaining} max overseas slots remaining"
 
 
 class BidRecord:
@@ -224,28 +237,18 @@ class TeamStrategy:
         return True
 
 class LLMClient:
-    def __init__(self, model="claude-sonnet-4-20250514"):
+    def __init__(self, model="gpt-5.2"):
         self.model = model
     
     async def call(self, prompt: str) -> str:
-        return self._mock_response(prompt)
+        llm = ChatOpenAI(model=self.model, temperature=0, stream_usage=True)
+        response = await llm.ainvoke(prompt)
+        return response.content
     
-    def _mock_response(self, prompt: str) -> str:
-        """Mock LLM response for testing"""
-        if "auction strategy" in prompt.lower():
-            return json.dumps({
-                "role_priorities": ["All Rounder", "Fast Bowler", "Batter"],
-                "max_budget_per_player": 2000,
-                "reserve_budget": 2000,
-                "aggressiveness": "moderate",
-                "critical_gaps": ["Need backup all-rounder", "Need death bowler"],
-                "reasoning": "Balanced approach to fill gaps"
-            })
-        return "{}"
-
 class StrategyManager:
-    def __init__(self, llm_client: LLMClient):
+    def __init__(self, llm_client: LLMClient, all_teams: List[Team]):
         self.llm_client = llm_client
+        self.all_teams = all_teams
         self.strategies: Dict[str, TeamStrategy] = {}
 
     async def generate_all_strategies(self, teams: List) -> Dict[str, TeamStrategy]:
@@ -268,11 +271,18 @@ class StrategyManager:
                 - Squad: {len(team.squad)}/25 players
                 - Slots remaining: {team.total_slots}
                 - Overseas slots: {team.overseas_slots}/8
+                - Other Teams: {set(self.all_teams) - set([team])} 
 
-            SQUAD COMPOSITION:
-                {json.dumps(squad_comp, indent=2)}
+            SQUAD:
+                {json.dumps([p.to_dict() for p in team.squad], indent=2)}
+
+            AUCTIONED PLAYER CATEGORIES:
+                {[e.value for e in AuctionCategory]}
 
             Analyze and create auction strategy.
+
+            Keep in mind no stats whatsoever are available for any of the current squad or the players to be auctioned, so that's a limitation for now.
+            Keep the requirements very simple keeping that in mind. Also, take into account other teams' budget and squad, thinking how they will be competing.
 
             Respond ONLY with JSON (no markdown):
             {{
@@ -284,6 +294,8 @@ class StrategyManager:
                 "reasoning": "Brief explanation"
             }}
         """
+
+        print(prompt)
 
         try:
             response = await self.llm_client.call(prompt)
@@ -367,20 +379,20 @@ async def test_strategies():
     teams, _ = initialize_auction()
     
     llm = LLMClient()
-    strategy_mgr = StrategyManager(llm)
+    strategy_mgr = StrategyManager(llm, teams)
     
-    # Generate all strategies
-    await strategy_mgr.generate_all_strategies(teams)
+    await strategy_mgr.generate_all_strategies(teams[:3])
     
-    # Print them
     for team in teams[:3]:
         strategy = strategy_mgr.get_strategy(team.name)
         print(f"\n{team.name}:")
+        print(f"  Total Budget ₹{team.budget} L")
         print(f"  Priorities: {strategy.role_priorities}")
-        print(f"  Max per player: ₹{strategy.max_budget_per_player}L")
-        print(f"  Reserve: ₹{strategy.reserve_budget}L")
+        print(f"  Max per player: ₹{strategy.max_budget_per_player} L")
+        print(f"  Reserve: ₹{strategy.reserve_budget} L")
         print(f"  Style: {strategy.aggressiveness}")
         print(f"  Gaps: {strategy.critical_gaps}")
+        print(f"  Reasoning: {strategy.reasoning}")
 
 if __name__ == '__main__':
     asyncio.run(test_strategies())
