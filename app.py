@@ -1,50 +1,9 @@
-from enum import Enum
+from datetime import datetime
 import json
-import re
+from typing import List, Optional
 import pandas as pd
 
-AUCTION_URL = 'https://www.cricbuzz.com/cricket-series/ipl-2026/auction/teams'
-
-def format_price(price: str):
-    price_str = price.split(' (')[0].replace('₹', '')
-    if 'crore' in price_str:
-        return int(float(price_str.replace('crore', '')) * 100)
-    elif 'lakh' in price_str:
-        return int(float(price_str.replace('lakh', '')))
-    else:
-        return int(price_str)
-
-class AuctionCategory(str, Enum):
-    BA = 'Batter'
-    AL = 'All Rounder'
-    FA = 'Fast Bowler'
-    SP = 'Spinner'
-    WK = 'Wicket Keeper'
-    UBA = 'Uncapped Batter'
-    UWK = 'Uncapped Wicket Keeper'
-    UFA = 'Uncapped Fast Bowler'
-    USP = 'Uncapped Spinner'
-    UAL = 'Uncapped All Rounder'
-
-    @classmethod
-    def from_set_name(cls, set_name: str):
-        return cls[re.split(r'(\d+)', set_name)[0]]
-
-class PlayerTypeTeam(str, Enum):
-    BA = 'Batter'
-    AL = 'All Rounder'
-    FA = 'Bowler'
-    SP = 'Bowler'
-    WK = 'Wicket Keeper'
-    UBA = 'Batter'
-    UWK = 'Wicket Keeper'
-    UFA = 'Bowler'
-    USP = 'Bowler'
-    UAL = 'All Rounder'
-
-    @classmethod
-    def from_auction_type(cls, auction_type: AuctionCategory):
-        return cls[auction_type.name]
+from utils import AuctionCategory, AuctionPhase, PlayerTypeTeam
 
 class AuctionSet:
     def __init__(self, set_number: int, set_name: str, players: list["Player"]):
@@ -77,7 +36,7 @@ class Player:
         self.capping = capping
 
     def __repr__(self):
-        return f"{self.name} - {self.type} ({self.base_price}L/{self.retained_price}L)"
+        return f"{self.name} - {self.type} ({self.base_price}L / {self.retained_price}L)"
 
 class Team:
     def __init__(self, name: str, budget: int):
@@ -134,11 +93,76 @@ class Team:
     def __repr__(self):
         return f"{self.name} - {self.total_spent}L spent - {self.total_spent / 12500 * 100:.2f}% of budget - {self.total_slots} slots - {self.overseas_slots} overseas slots"
 
-def get_teams():
+
+class BidRecord:
+    def __init__(self, team: Team, amount: int):
+        self.team = team
+        self.amount = amount
+        self.timestamp = datetime.now().isoformat()
+
+    def __repr__(self) -> str:
+        return f"{self.team.name} - Rs. {self.amount}"
+
+
+class StateManager:
+    def __init__(self, teams: List[Team], auction_sets: List[AuctionSet]):
+        self.teams = teams
+        self.auction_sets = auction_sets
+        
+        # Current auction state
+        self.phase = AuctionPhase.IDLE
+        self.current_set_index = 0
+        self.current_player: Optional[Player] = None
+        self.current_bid = 0
+        
+        # Bidding state
+        self.active_bidders: List[Team] = []
+        self.interested_teams: List[Team] = []
+        self.opted_out_teams: List[Team] = []
+        self.bid_history: List[BidRecord] = []
+        
+        # Results tracking
+        self.sold_players: List[dict] = []
+        self.unsold_players: List[Player] = []
+
+    def get_current_set(self) -> Optional[AuctionSet]:
+        """Get the current auction set"""
+        if self.current_set_index >= len(self.auction_sets):
+            return None
+        return self.auction_sets[self.current_set_index]
+    
+    def load_next_player(self) -> Optional[Player]:
+        """Load random player from current set"""
+        current_set = self.get_current_set()
+        
+        # Move to next set if current is exhausted
+        while current_set and not current_set.has_remaining_players():
+            self.current_set_index += 1
+            current_set = self.get_current_set()
+        
+        # Auction complete?
+        if not current_set:
+            self.phase = AuctionPhase.AUCTION_COMPLETE
+            return None
+        
+        # Get random player
+        self.current_player = current_set.get_random_player()
+        self.current_bid = self.current_player.base_price
+        self.phase = AuctionPhase.PLAYER_ANNOUNCED
+        
+        # Reset bidding state
+        self.active_bidders = []
+        self.interested_teams = []
+        self.opted_out_teams = []
+        self.bid_history = []
+        
+        return self.current_player
+
+def get_teams() -> list[str]:
     with open('teams.json', 'r') as f:
         return json.load(f)
 
-def load_auction_list():
+def load_auction_list() -> list[AuctionSet]:
     df = pd.read_csv('dataset.tsv', sep='\t')
     df.columns = ['serial_number', 'set_number', 'set_name', 'player', 'country', 'c_u_a', 'base_price']
     df['auction_category'] = df['set_name'].apply(AuctionCategory.from_set_name)
@@ -168,34 +192,32 @@ def load_auction_list():
 
 
 def initialize_auction():
-    # Load teams
     teams_list = get_teams()
-    teams = []
+    teams: list[Team] = []
     for team_name in teams_list:
-        team = Team(team_name, 12500)  # 125 crores = 12500 lakhs
+        team = Team(team_name, 12500)
         team.load_squad()
         teams.append(team)
     
-    # Load auction sets
     auction_sets = load_auction_list()
     
-    print(f"✓ Loaded {len(teams)} teams")
-    print(f"✓ Loaded {len(auction_sets)} auction sets")
+    print(f"Loaded {len(teams)} teams")
+    print(f"Loaded {len(auction_sets)} auction sets")
     total_players = sum(len(s.players) for s in auction_sets)
-    print(f"✓ Total players in auction: {total_players}")
+    print(f"Total players in auction: {total_players}")
     
     return teams, auction_sets
 
 if __name__ == '__main__':
     teams, auction_sets = initialize_auction()
-    
-    for team in teams:
-        print(f"\n{team}")
-        print(f"  Squad: {len(team.squad)} players")
-        print(f"  Composition: {team.get_squad_composition()}")
-    
-    for auction_set in auction_sets:
-        print(f"\n{auction_set.set_name}: {len(auction_set.players)} players")
-    
-    first_player = auction_sets[0].get_random_player()
-    print(f"\nRandom player: {first_player}")
+    state = StateManager(teams, auction_sets)
+
+    print(f"Initial phase: {state.phase}")
+
+    player = state.load_next_player()
+    print(f"\nPhase after loading: {state.phase}")
+    print(f"Current player: {player}")
+    print(f"Current bid: ₹{state.current_bid}L")
+
+    player2 = state.load_next_player()
+    print(f"\nNext player: {player2}")
