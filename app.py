@@ -101,7 +101,7 @@ class BidRecord:
         self.timestamp = datetime.now().isoformat()
 
     def __repr__(self) -> str:
-        return f"{self.team.name} - Rs. {self.amount}"
+        return f"{self.team.name} - Rs. {self.amount} lacs"
 
 
 class StateManager:
@@ -158,6 +158,49 @@ class StateManager:
         
         return self.current_player
 
+    def set_interested_teams(self, teams: List[Team]):
+        """Set which teams want to bid"""
+        self.interested_teams = teams.copy()
+    
+    def set_active_bidders(self, team_a: Team, team_b: Team):
+        """Start bidding between two teams"""
+        self.active_bidders = [team_a, team_b]
+        self.phase = AuctionPhase.BIDDING_ACTIVE
+    
+    def record_bid(self, team: Team, amount: int):
+        """Record a bid in history"""
+        self.current_bid = amount
+        self.bid_history.append(BidRecord(team, amount))
+    
+    def mark_team_opted_out(self, team: Team):
+        """Team drops out of bidding"""
+        if team in self.active_bidders:
+            self.active_bidders.remove(team)
+        if team not in self.opted_out_teams:
+            self.opted_out_teams.append(team)
+
+    def finalize_player_sold(self, winning_team: Team):
+        """Player sold to winning team"""
+        if not self.current_player:
+            raise ValueError("No current player to sell")
+        
+        winning_team.add_player(self.current_player, self.current_bid)
+        
+        self.sold_players.append({
+            'player': self.current_player,
+            'team': winning_team,
+            'price': self.current_bid,
+            'set': self.get_current_set().set_name
+        })
+        
+        self.phase = AuctionPhase.PLAYER_SOLD
+    
+    def finalize_player_unsold(self):
+        """No one bought the player"""
+        if self.current_player:
+            self.unsold_players.append(self.current_player)
+        self.phase = AuctionPhase.PLAYER_UNSOLD
+
 def get_teams() -> list[str]:
     with open('teams.json', 'r') as f:
         return json.load(f)
@@ -212,12 +255,36 @@ if __name__ == '__main__':
     teams, auction_sets = initialize_auction()
     state = StateManager(teams, auction_sets)
 
-    print(f"Initial phase: {state.phase}")
-
     player = state.load_next_player()
-    print(f"\nPhase after loading: {state.phase}")
-    print(f"Current player: {player}")
-    print(f"Current bid: ₹{state.current_bid}L")
+    print(f"Player: {player.name}, Base: ₹{player.base_price}L")
 
-    player2 = state.load_next_player()
-    print(f"\nNext player: {player2}")
+    # Mark interested teams
+    interested = [teams[0], teams[1], teams[2]]
+    state.set_interested_teams(interested)
+    print(f"Interested: {[t.name for t in state.interested_teams]}")
+
+    # Start bidding
+    state.set_active_bidders(teams[0], teams[1])
+    print(f"Active bidders: {[t.name for t in state.active_bidders]}")
+    print(f"Phase: {state.phase}")
+
+    # Simulate bids
+    state.record_bid(teams[0], player.base_price + 50)
+    state.record_bid(teams[1], player.base_price + 100)
+    state.record_bid(teams[0], player.base_price + 150)
+    print(f"Bid history: {[str(b) for b in state.bid_history]}")
+
+    # One team passes
+    state.mark_team_opted_out(teams[1])
+    print(f"Opted out: {[t.name for t in state.opted_out_teams]}")
+
+    print(teams[0])
+
+    # Finalize
+    print(f"\nBefore sale - {teams[0].name} budget: ₹{teams[0].budget}L")
+    state.finalize_player_sold(teams[0])
+    print(f"After sale - {teams[0].name} budget: ₹{teams[0].budget}L")
+    print(f"Phase: {state.phase}")
+    print(f"Total sold: {len(state.sold_players)}")
+
+    print(teams[0])
